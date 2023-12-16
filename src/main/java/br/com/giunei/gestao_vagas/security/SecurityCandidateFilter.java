@@ -1,6 +1,6 @@
 package br.com.giunei.gestao_vagas.security;
 
-import br.com.giunei.gestao_vagas.providers.JWTProvider;
+import br.com.giunei.gestao_vagas.providers.JWTCandadidateProvider;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -17,36 +17,35 @@ import java.io.IOException;
 import java.util.List;
 
 @Component
-public class SecurityFilter extends OncePerRequestFilter {
+public class SecurityCandidateFilter extends OncePerRequestFilter {
 
     @Autowired
-    private JWTProvider jwtProvider;
+    private JWTCandadidateProvider jwtProvider;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String header = request.getHeader("Authorization");
 
-        if (request.getRequestURI().startsWith("/company")) {
-            if (header != null) {
+        if(request.getRequestURI().startsWith("/candidate")) {
+            if(header != null) {
                 DecodedJWT token = this.jwtProvider.validateToken(header);
-                if (token == null) {
+
+                if(token == null) {
                     response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                     return;
                 }
 
-                List<String> roles = token.getClaim("roles").asList(String.class);
+                request.setAttribute("candidate_id", token.getSubject());
+                List<Object> roles = token.getClaim("roles").asList(Object.class);
+
                 List<SimpleGrantedAuthority> grants = roles.stream()
-                        .map(role -> new SimpleGrantedAuthority("ROLE_" + role.toUpperCase()))
+                        .map(role -> new SimpleGrantedAuthority("ROLE_" + role.toString().toUpperCase()))
                         .toList();
 
-                request.setAttribute("company_id", token.getSubject());
-                UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(token.toString(),
-                        null,
-                        grants);
+                UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(token.getSubject(),  null, grants);
                 SecurityContextHolder.getContext().setAuthentication(auth);
             }
         }
-
 
         filterChain.doFilter(request, response);
     }
