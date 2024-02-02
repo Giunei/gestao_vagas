@@ -1,7 +1,8 @@
 package br.com.giunei.gestao_vagas.modules.candidate.controller;
 
-import br.com.giunei.gestao_vagas.modules.candidate.CandidateEntity;
 import br.com.giunei.gestao_vagas.modules.candidate.dto.ProfileCandidateResponseDTO;
+import br.com.giunei.gestao_vagas.modules.candidate.entity.CandidateEntity;
+import br.com.giunei.gestao_vagas.modules.candidate.use_cases.ApplyJobCandidateUseCase;
 import br.com.giunei.gestao_vagas.modules.candidate.use_cases.CreateCandidateUseCase;
 import br.com.giunei.gestao_vagas.modules.candidate.use_cases.ListAllJobsByFilterUseCase;
 import br.com.giunei.gestao_vagas.modules.candidate.use_cases.ProfileCandidateUseCase;
@@ -37,6 +38,9 @@ public class CandidateController {
 
     @Autowired
     private ListAllJobsByFilterUseCase listAllJobsByFilterUseCase;
+
+    @Autowired
+    private ApplyJobCandidateUseCase applyJobCandidateUseCase;
 
     @PostMapping("/")
     @Operation(summary = "Cadastro de candidato", description = "Essa função é responsável por cadastrar um candidato")
@@ -91,4 +95,15 @@ public class CandidateController {
     public List<JobEntity> findJobByFilter(@RequestParam String filter) {
         return this.listAllJobsByFilterUseCase.execute(filter);
     }
+
+//    public ResponseEntity<Object> applyJob(HttpServletRequest request, @RequestBody UUID idJob) {
+//        var idCandidate = request.getAttribute("candidate_id");
+//
+//        try {
+//            this.applyJobCandidateUseCase.execute(UUID.fromString(idCandidate.toString()), idJob);
+//            return ResponseEntity.ok().body(result);
+//        } catch(Exception e) {
+//            return ResponseEntity.badRequest().body(e.getMessage());
+//
+//    }
 }
