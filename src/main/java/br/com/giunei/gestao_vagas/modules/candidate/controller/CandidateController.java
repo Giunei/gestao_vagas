@@ -1,6 +1,7 @@
 package br.com.giunei.gestao_vagas.modules.candidate.controller;
 
 import br.com.giunei.gestao_vagas.modules.candidate.dto.ProfileCandidateResponseDTO;
+import br.com.giunei.gestao_vagas.modules.candidate.entity.ApplyJobEntity;
 import br.com.giunei.gestao_vagas.modules.candidate.entity.CandidateEntity;
 import br.com.giunei.gestao_vagas.modules.candidate.use_cases.ApplyJobCandidateUseCase;
 import br.com.giunei.gestao_vagas.modules.candidate.use_cases.CreateCandidateUseCase;
@@ -96,14 +97,18 @@ public class CandidateController {
         return this.listAllJobsByFilterUseCase.execute(filter);
     }
 
-//    public ResponseEntity<Object> applyJob(HttpServletRequest request, @RequestBody UUID idJob) {
-//        var idCandidate = request.getAttribute("candidate_id");
-//
-//        try {
-//            this.applyJobCandidateUseCase.execute(UUID.fromString(idCandidate.toString()), idJob);
-//            return ResponseEntity.ok().body(result);
-//        } catch(Exception e) {
-//            return ResponseEntity.badRequest().body(e.getMessage());
-//
-//    }
+    @PostMapping("/job/apply")
+    @PreAuthorize("hasRole('CANDIDATE')")
+    @SecurityRequirement(name = "jwt_auth")
+    @Operation(summary = "Incrição do candidato para uma vaga", description = "Essa função é responsável por realizar a inscrição em um vaga.")
+    public ResponseEntity<Object> applyJob(HttpServletRequest request, @RequestBody UUID idJob) {
+        var idCandidate = request.getAttribute("candidate_id");
+
+        try {
+            ApplyJobEntity result = this.applyJobCandidateUseCase.execute(UUID.fromString(idCandidate.toString()), idJob);
+            return ResponseEntity.ok().body(result);
+        } catch(Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 }

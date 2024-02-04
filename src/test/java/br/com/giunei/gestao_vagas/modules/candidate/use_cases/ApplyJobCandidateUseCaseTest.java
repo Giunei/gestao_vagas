@@ -19,6 +19,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -64,21 +65,25 @@ class ApplyJobCandidateUseCaseTest {
     }
 
     @Test
-    public void should_be_able_to_create_a_new_apply_job() {
+    void should_be_able_to_create_a_new_apply_job() {
         UUID idCandidate = UUID.randomUUID();
         UUID idJob = UUID.randomUUID();
 
-        ApplyJobEntity applyJob = ApplyJobEntity.builder().candidateId(idCandidate).jobId(idJob).build();
+        ApplyJobEntity applyJob = ApplyJobEntity.builder()
+                .candidateId(idCandidate)
+                .jobId(idJob).build();
         applyJob.setId(UUID.randomUUID());
+
+        ApplyJobEntity applyJobCreated = ApplyJobEntity.builder().id(UUID.randomUUID()).build();
 
         when(candidateRepository.findById(idCandidate)).thenReturn(Optional.of(new CandidateEntity()));
         when(jobRepository.findById(idJob)).thenReturn(Optional.of(new JobEntity()));
 
-        when(applyJobRepository.save(any())).thenReturn(new ApplyJobEntity());
+        when(applyJobRepository.save(any())).thenReturn(applyJobCreated);
 
         ApplyJobEntity result = applyJobCandidateUseCase.execute(idCandidate, idJob);
 
         assertThat(result).hasFieldOrProperty("id");
-
+        assertNotNull(result.getId());
     }
 }
