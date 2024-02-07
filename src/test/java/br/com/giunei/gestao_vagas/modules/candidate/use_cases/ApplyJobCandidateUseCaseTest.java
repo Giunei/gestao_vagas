@@ -20,7 +20,6 @@ import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -72,14 +71,13 @@ class ApplyJobCandidateUseCaseTest {
         ApplyJobEntity applyJob = ApplyJobEntity.builder()
                 .candidateId(idCandidate)
                 .jobId(idJob).build();
-        applyJob.setId(UUID.randomUUID());
 
         ApplyJobEntity applyJobCreated = ApplyJobEntity.builder().id(UUID.randomUUID()).build();
 
         when(candidateRepository.findById(idCandidate)).thenReturn(Optional.of(new CandidateEntity()));
         when(jobRepository.findById(idJob)).thenReturn(Optional.of(new JobEntity()));
 
-        when(applyJobRepository.save(any())).thenReturn(applyJobCreated);
+        when(applyJobRepository.save(applyJob)).thenReturn(applyJobCreated);
 
         ApplyJobEntity result = applyJobCandidateUseCase.execute(idCandidate, idJob);
 
