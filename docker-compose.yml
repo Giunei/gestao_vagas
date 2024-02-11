@@ -23,7 +23,7 @@ services:
         container_name: prometheus
         image: prom/prometheus:latest
         volumes:
-            - ./config/prometheus.yml:/etc/prometheus.yml
+            - ./config/prometheus.yml:/etc/prometheus/prometheus.yml
             - prometheus_data:/prometheus
         networks:
             - gv-network
