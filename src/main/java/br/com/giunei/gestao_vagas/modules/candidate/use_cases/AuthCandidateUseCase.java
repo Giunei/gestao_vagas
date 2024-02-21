@@ -48,6 +48,9 @@ public class AuthCandidateUseCase {
                 .withExpiresAt(expiresIn)
                 .sign(algorithm);
 
+        this.candidateRepository.findByUsername(authCandidateRequestDTO.username())
+                .orElseThrow(() -> new UsernameNotFoundException("Usename/password incorrect"));
+
         return AuthCandidateResponseDTO.builder()
                 .access_token(token)
                 .expires_in(expiresIn.toEpochMilli())
