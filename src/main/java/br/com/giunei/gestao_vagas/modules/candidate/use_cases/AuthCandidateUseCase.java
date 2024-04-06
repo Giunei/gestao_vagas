@@ -39,21 +39,24 @@ public class AuthCandidateUseCase {
             throw new AuthenticationException();
         }
 
+        List<String> roles = List.of("candidate");
+
         Algorithm algorithm = Algorithm.HMAC256(secretKey);
         Instant expiresIn = Instant.now().plus(Duration.ofMinutes(10));
         var token = JWT.create()
                 .withIssuer("giunasa")
                 .withSubject(candidate.getId().toString())
-                .withClaim("roles", List.of("candidate"))
+                .withClaim("roles", roles)
                 .withExpiresAt(expiresIn)
                 .sign(algorithm);
 
         this.candidateRepository.findByUsername(authCandidateRequestDTO.username())
-                .orElseThrow(() -> new UsernameNotFoundException("Usename/password incorrect"));
+                .orElseThrow(() -> new UsernameNotFoundException("Username/password incorrect"));
 
         return AuthCandidateResponseDTO.builder()
                 .access_token(token)
                 .expires_in(expiresIn.toEpochMilli())
+                .roles(roles)
                 .build();
     }
 }

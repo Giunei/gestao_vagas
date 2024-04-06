@@ -37,5 +37,5 @@ public class ApplyJobEntity {
     private UUID jobId;
 
     @CreationTimestamp
-    private LocalDateTime createdAt;
+    private LocalDateTime createdDate;
 }

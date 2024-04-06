@@ -82,7 +82,7 @@ public class CandidateController {
 
     }
 
-    @GetMapping("/job")
+    @GetMapping("/jobs")
     @PreAuthorize("hasRole('CANDIDATE')")
     @Operation(summary = "Listagem de vagas disponível para o candidato", description = "Essa função é responsável por listar todas as vagas disponiveis baseada nos filtros")
     @ApiResponses({
@@ -97,7 +97,7 @@ public class CandidateController {
         return this.listAllJobsByFilterUseCase.execute(filter);
     }
 
-    @PostMapping("/job/apply")
+    @PostMapping("/jobs/apply")
     @PreAuthorize("hasRole('CANDIDATE')")
     @SecurityRequirement(name = "jwt_auth")
     @Operation(summary = "Incrição do candidato para uma vaga", description = "Essa função é responsável por realizar a inscrição em um vaga.")
