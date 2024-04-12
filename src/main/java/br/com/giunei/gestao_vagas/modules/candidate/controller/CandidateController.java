@@ -101,11 +101,11 @@ public class CandidateController {
     @PreAuthorize("hasRole('CANDIDATE')")
     @SecurityRequirement(name = "jwt_auth")
     @Operation(summary = "Incrição do candidato para uma vaga", description = "Essa função é responsável por realizar a inscrição em um vaga.")
-    public ResponseEntity<Object> applyJob(HttpServletRequest request, @RequestBody UUID idJob) {
+    public ResponseEntity<Object> applyJob(HttpServletRequest request, @RequestBody UUID jobId) {
         var idCandidate = request.getAttribute("candidate_id");
 
         try {
-            ApplyJobEntity result = this.applyJobCandidateUseCase.execute(UUID.fromString(idCandidate.toString()), idJob);
+            ApplyJobEntity result = this.applyJobCandidateUseCase.execute(UUID.fromString(idCandidate.toString()), jobId);
             return ResponseEntity.ok().body(result);
         } catch(Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());

@@ -48,13 +48,16 @@ public class AuthCompanyUseCase {
 
         String token = JWT.create().withIssuer("giunasa")
                 .withExpiresAt(expiresIn)
-                .withClaim("roles", List.of("company"))
+                .withClaim("roles", List.of("COMPANY"))
                 .withSubject(company.getId().toString())
                 .sign(algorithm);
+
+        List<String> roles = List.of("COMPANY");
 
         return AuthCompanyResponseDTO.builder()
                 .access_token(token)
                 .expires_in(expiresIn.toEpochMilli())
+                .roles(roles)
                 .build();
     }
 
