@@ -42,7 +42,7 @@ public class AuthCandidateUseCase {
         List<String> roles = List.of("candidate");
 
         Algorithm algorithm = Algorithm.HMAC256(secretKey);
-        Instant expiresIn = Instant.now().plus(Duration.ofMinutes(10));
+        Instant expiresIn = Instant.now().plus(Duration.ofHours(30));
         var token = JWT.create()
                 .withIssuer("giunasa")
                 .withSubject(candidate.getId().toString())

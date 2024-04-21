@@ -36,6 +36,9 @@ public class ApplyJobEntity {
     @Column(name = "job_id")
     private UUID jobId;
 
+    @Column
+    private Integer rating;
+
     @CreationTimestamp
     private LocalDateTime createdDate;
 }
