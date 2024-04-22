@@ -4,7 +4,6 @@ import br.com.giunei.gestao_vagas.modules.company.entities.JobEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
 
@@ -17,8 +16,8 @@ public interface JobRepository extends JpaRepository<JobEntity, UUID> {
     @Query("""
             SELECT j
                 FROM job j
-            WHERE j.id in :jobsId
+            WHERE j.id = :jobId
                 AND lower(j.description) LIKE lower(concat('%', :filter, '%'))
             """)
-    List<JobEntity> findByJobEntityListInAndDescriptionEquals(HashSet<UUID> jobsId, String filter);
+    JobEntity findByJobEntityInAndDescriptionEquals(UUID jobId, String filter);
 }

@@ -10,10 +10,10 @@ import java.util.UUID;
 public interface ApplyJobRepository extends JpaRepository<ApplyJobEntity, UUID> {
 
     @Query("""
-            SELECT aj
-                FROM apply_jobs aj
-            JOIN aj.jobEntity j
-            ORDER BY aj.rating DESC
+            SELECT ap.jobId
+                FROM apply_jobs ap
+            GROUP BY ap.jobId
+            ORDER BY AVG(ap.rating) DESC
             """)
-    List<ApplyJobEntity> findApplyJobCompanyIdOrderByRating();
+    List<UUID> findBestJobId();
 }

@@ -1,16 +1,14 @@
 package br.com.giunei.gestao_vagas.modules.candidate.use_cases;
 
-import br.com.giunei.gestao_vagas.modules.candidate.entity.ApplyJobEntity;
 import br.com.giunei.gestao_vagas.modules.candidate.repository.ApplyJobRepository;
 import br.com.giunei.gestao_vagas.modules.company.entities.JobEntity;
 import br.com.giunei.gestao_vagas.modules.company.repositories.JobRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 public class ListAllJobsByFilterOrderByRating {
@@ -22,8 +20,12 @@ public class ListAllJobsByFilterOrderByRating {
     private ApplyJobRepository applyJobRepository;
 
     public List<JobEntity> execute(String filter) {
-        HashSet<UUID> jobsIds = applyJobRepository.findApplyJobCompanyIdOrderByRating()
-                .stream().map(ApplyJobEntity::getJobId).collect(Collectors.toCollection(HashSet::new));
-        return jobRepository.findByJobEntityListInAndDescriptionEquals(jobsIds, filter);
+        List<UUID> bestJobs = applyJobRepository.findBestJobId();
+        List<JobEntity> jobEntities = new ArrayList<>();
+
+        for(UUID id : bestJobs) {
+            jobEntities.add(jobRepository.findByJobEntityInAndDescriptionEquals(id, filter));
+        }
+        return jobEntities;
     }
 }
