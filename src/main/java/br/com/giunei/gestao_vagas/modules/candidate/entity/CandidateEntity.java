@@ -1,13 +1,13 @@
 package br.com.giunei.gestao_vagas.modules.candidate.entity;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Pattern;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CurrentTimestamp;
 import org.hibernate.validator.constraints.Length;
 
@@ -15,6 +15,9 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity(name = "candidate")
 public class CandidateEntity {
 
@@ -39,7 +42,10 @@ public class CandidateEntity {
 
     @Schema(example = "Desenvolvedor Java", requiredMode = Schema.RequiredMode.REQUIRED, description = "Breve descrição do candidato")
     private String description;
-    private String curriculum;
+
+    @Column(name = "linkedin_url")
+    @Schema(example = "https://www.linkedin.com/in/giunei", requiredMode = Schema.RequiredMode.NOT_REQUIRED, description = "URL do perfil do candidato")
+    private String linkedInURL;
 
     @CurrentTimestamp
     private LocalDateTime createdDate;

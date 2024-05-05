@@ -16,4 +16,6 @@ public interface ApplyJobRepository extends JpaRepository<ApplyJobEntity, UUID> 
             ORDER BY AVG(ap.rating) DESC
             """)
     List<UUID> findBestJobId();
+
+    List<ApplyJobEntity> findByJobId(UUID jobId);
 }

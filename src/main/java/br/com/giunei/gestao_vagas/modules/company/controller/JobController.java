@@ -1,10 +1,13 @@
 package br.com.giunei.gestao_vagas.modules.company.controller;
 
+import br.com.giunei.gestao_vagas.modules.candidate.dto.ApplyJobDTO;
+import br.com.giunei.gestao_vagas.modules.candidate.use_cases.ListAllApplyJobsByJobIdUseCase;
 import br.com.giunei.gestao_vagas.modules.company.dto.CreateJobDTO;
 import br.com.giunei.gestao_vagas.modules.company.entities.JobEntity;
 import br.com.giunei.gestao_vagas.modules.company.use_cases.CreateJobUseCase;
 import br.com.giunei.gestao_vagas.modules.company.use_cases.ListAllJobsByCompanyUseCase;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -31,6 +34,8 @@ public class JobController {
     @Autowired
     private ListAllJobsByCompanyUseCase listAllJobsByCompanyUseCase;
 
+    @Autowired
+    private ListAllApplyJobsByJobIdUseCase allApplyJobsByJobIdUseCase;
 
     @PostMapping("/")
     @PreAuthorize("hasRole('COMPANY')")
@@ -71,5 +76,21 @@ public class JobController {
         Object companyId = request.getAttribute("company_id");
         List<JobEntity> result = listAllJobsByCompanyUseCase.execute(UUID.fromString(companyId.toString()));
         return ResponseEntity.ok().body(result);
+    }
+
+    @GetMapping("/applieds")
+    @PreAuthorize("hasRole('COMPANY')")
+    @Operation(summary = "Listagem de vagas disponível para o candidato", description = "Essa função é responsável por listar todas as vagas disponiveis baseada nos filtros." +
+            "Passar specification como 'data' para ordenar por mais recentes, 'rating' por mais bem votadas, caso contrário apenas busca pelo filtro.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", content = {
+                    @Content(
+                            array = @ArraySchema(schema = @Schema(implementation = JobEntity.class))
+                    )
+            })
+    })
+    @SecurityRequirement(name = "jwt_auth")
+    public List<ApplyJobDTO> findApplyJobByJobId(@RequestParam UUID jobId) {
+        return this.allApplyJobsByJobIdUseCase.execute(jobId);
     }
 }

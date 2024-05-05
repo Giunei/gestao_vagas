@@ -1,5 +1,6 @@
 package br.com.giunei.gestao_vagas.modules.candidate.controller;
 
+import br.com.giunei.gestao_vagas.modules.candidate.dto.CandidateDTO;
 import br.com.giunei.gestao_vagas.modules.candidate.dto.ProfileCandidateResponseDTO;
 import br.com.giunei.gestao_vagas.modules.candidate.entity.ApplyJobEntity;
 import br.com.giunei.gestao_vagas.modules.candidate.entity.CandidateEntity;
@@ -55,9 +56,9 @@ public class CandidateController {
             }),
             @ApiResponse(responseCode = "400", description = "Usuário já existe")
     })
-    public ResponseEntity<Object> create(@Valid @RequestBody CandidateEntity candidateEntity) {
+    public ResponseEntity<Object> create(@Valid @RequestBody CandidateDTO candidateDTO) {
         try {
-            var result = createCandidateUseCase.execute(candidateEntity);
+            var result = createCandidateUseCase.execute(candidateDTO);
             return ResponseEntity.ok().body(result);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
