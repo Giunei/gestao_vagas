@@ -60,5 +60,4 @@ public class AuthCompanyUseCase {
                 .roles(roles)
                 .build();
     }
-
 }

@@ -11,7 +11,6 @@ import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
@@ -50,12 +49,10 @@ public class CandidateController {
 
     @PostMapping("/")
     @Operation(summary = "Cadastro de candidato", description = "Essa função é responsável por cadastrar um candidato")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", content = {
-                    @Content(schema = @Schema(implementation = CandidateEntity.class))
-            }),
-            @ApiResponse(responseCode = "400", description = "Usuário já existe")
+    @ApiResponse(responseCode = "200", content = {
+            @Content(schema = @Schema(implementation = CandidateEntity.class))
     })
+    @ApiResponse(responseCode = "400", description = "Usuário já existe")
     public ResponseEntity<Object> create(@Valid @RequestBody CandidateDTO candidateDTO) {
         try {
             var result = createCandidateUseCase.execute(candidateDTO);
@@ -68,12 +65,10 @@ public class CandidateController {
     @GetMapping("/")
     @PreAuthorize("hasRole('CANDIDATE')")
     @Operation(summary = "Perfil do candidato", description = "Essa função é responsável por buscar as informações do candidato")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", content = {
-                    @Content(schema = @Schema(implementation = ProfileCandidateResponseDTO.class))
-            }),
-            @ApiResponse(responseCode = "400", description = "User not found")
+    @ApiResponse(responseCode = "200", content = {
+            @Content(schema = @Schema(implementation = ProfileCandidateResponseDTO.class))
     })
+    @ApiResponse(responseCode = "400", description = "User not found")
     @SecurityRequirement(name = "jwt_auth")
     public ResponseEntity<Object> get(HttpServletRequest request) {
         Object candidateId = request.getAttribute("candidate_id");
@@ -91,16 +86,14 @@ public class CandidateController {
     @PreAuthorize("hasRole('CANDIDATE')")
     @Operation(summary = "Listagem de vagas disponível para o candidato", description = "Essa função é responsável por listar todas as vagas disponiveis baseada nos filtros." +
             "Passar specification como 'data' para ordenar por mais recentes, 'rating' por mais bem votadas, caso contrário apenas busca pelo filtro.")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", content = {
-                    @Content(
-                            array = @ArraySchema(schema = @Schema(implementation = JobEntity.class))
-                    )
-            })
+    @ApiResponse(responseCode = "200", content = {
+            @Content(
+                    array = @ArraySchema(schema = @Schema(implementation = JobEntity.class))
+            )
     })
     @SecurityRequirement(name = "jwt_auth")
     public List<JobEntity> findJobByFilter(@RequestParam String filter, @RequestParam String specification) {
-        if(Objects.equals(specification, "data")) {
+        if (Objects.equals(specification, "data")) {
             return this.listAllJobsByFilterOrderByDataUseCase.execute(filter);
         } else if (Objects.equals(specification, "rating")) {
             return this.listAllJobsByFilterOrderByRating.execute(filter);
@@ -118,7 +111,7 @@ public class CandidateController {
         try {
             ApplyJobEntity result = this.applyJobCandidateUseCase.execute(UUID.fromString(idCandidate.toString()), jobId, rating);
             return ResponseEntity.ok().body(result);
-        } catch(Exception e) {
+        } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }

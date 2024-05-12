@@ -19,7 +19,7 @@ public interface JobRepository extends JpaRepository<JobEntity, UUID> {
             WHERE j.id = :jobId
                 AND lower(j.description) LIKE lower(concat('%', :filter, '%'))
             """)
-    JobEntity findByJobEntityInAndDescriptionEquals(UUID jobId, String filter);
+    List<JobEntity> findByJobEntityAndDescription(UUID jobId, String filter);
 
     @Query("""
             SELECT ji

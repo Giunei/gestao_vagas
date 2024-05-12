@@ -24,7 +24,8 @@ public class ListAllJobsByFilterOrderByRating {
         List<JobEntity> jobEntities = new ArrayList<>();
 
         for(UUID id : bestJobs) {
-            jobEntities.add(jobRepository.findByJobEntityInAndDescriptionEquals(id, filter));
+            List<JobEntity> jobs = jobRepository.findByJobEntityAndDescription(id, filter);
+            jobEntities.addAll(jobs);
         }
         return jobEntities;
     }

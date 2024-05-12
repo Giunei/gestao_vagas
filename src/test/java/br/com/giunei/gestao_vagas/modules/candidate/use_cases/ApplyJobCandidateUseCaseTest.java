@@ -15,6 +15,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Collections;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -41,7 +42,7 @@ class ApplyJobCandidateUseCaseTest {
     @DisplayName("Show not be able to apply job with candidate not found")
     void shoud_not_be_able_to_apply_job_with_candidate_not_found() {
         try {
-            applyJobCandidateUseCase.execute(null, null);
+            applyJobCandidateUseCase.execute(null, null, null);
         } catch (Exception e) {
             assertThat(e).isInstanceOf(UserNotFoundException.class);
         }
@@ -57,29 +58,33 @@ class ApplyJobCandidateUseCaseTest {
 
         when(candidateRepository.findById(idCandidate)).thenReturn(Optional.of(candidate));
         try {
-            applyJobCandidateUseCase.execute(idCandidate, null);
+            applyJobCandidateUseCase.execute(idCandidate, null, null);
         } catch (Exception e) {
             assertThat(e).isInstanceOf(JobNotFoundException.class);
         }
     }
 
     @Test
+    @DisplayName("Show be able to new apply job")
     void should_be_able_to_create_a_new_apply_job() {
         UUID idCandidate = UUID.randomUUID();
         UUID idJob = UUID.randomUUID();
 
         ApplyJobEntity applyJob = ApplyJobEntity.builder()
                 .candidateId(idCandidate)
-                .jobId(idJob).build();
+                .jobId(idJob)
+                .rating(3)
+                .build();
 
         ApplyJobEntity applyJobCreated = ApplyJobEntity.builder().id(UUID.randomUUID()).build();
 
         when(candidateRepository.findById(idCandidate)).thenReturn(Optional.of(new CandidateEntity()));
         when(jobRepository.findById(idJob)).thenReturn(Optional.of(new JobEntity()));
+        when(applyJobRepository.findByJobId(idJob)).thenReturn(Collections.EMPTY_LIST);
 
         when(applyJobRepository.save(applyJob)).thenReturn(applyJobCreated);
 
-        ApplyJobEntity result = applyJobCandidateUseCase.execute(idCandidate, idJob);
+        ApplyJobEntity result = applyJobCandidateUseCase.execute(idCandidate, idJob, 3);
 
         assertThat(result).hasFieldOrProperty("id");
         assertNotNull(result.getId());

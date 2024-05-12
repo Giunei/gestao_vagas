@@ -26,20 +26,17 @@ public class ApplyJobCandidateUseCase {
     private ApplyJobRepository applyJobRepository;
 
     public ApplyJobEntity execute(UUID idCandidate, UUID idJob, Integer rating) {
-        // Validar se candidato existe
         this.candidateRepository.findById(idCandidate).orElseThrow(UserNotFoundException::new);
 
-        // Validar se a vaga existe
         this.jobRepository.findById(idJob).orElseThrow(JobNotFoundException::new);
 
-        List<UUID> appliedsJobsIds = this.applyJobRepository.findByJobId(idJob)
-                .stream().map(ApplyJobEntity::getId).toList();
+        List<UUID> candidatesIds = this.applyJobRepository.findByJobId(idJob)
+                .stream().map(ApplyJobEntity::getCandidateId).toList();
 
-        if(appliedsJobsIds.contains(idCandidate)) {
+        if (candidatesIds.contains(idCandidate)) {
             throw new JobAlreadyAppliedException();
         }
 
-        // Candidato se inscrever na vaga
         ApplyJobEntity applyJob = ApplyJobEntity.builder()
                 .candidateId(idCandidate)
                 .jobId(idJob)
